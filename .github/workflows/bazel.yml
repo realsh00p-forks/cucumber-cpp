@@ -22,5 +22,5 @@ jobs:
     - name: build
       run: bazelisk build //... --disk_cache=~/.cache/bazel_disk_cache
 
-    - name: test
-      run: bazelisk test //... --disk_cache=~/.cache/bazel_disk_cache
+    #- name: test
+    #  run: bazelisk test //... --disk_cache=~/.cache/bazel_disk_cache
