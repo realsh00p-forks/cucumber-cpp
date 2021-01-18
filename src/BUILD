@@ -9,6 +9,12 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         "//include:cucumber-cpp",
+        "@boost//:asio",
+        "@boost//:filesystem",
+        "@boost//:foreach",
+        "@boost//:multi_array",
+        "@boost//:program_options",
+        "@boost//:scoped_ptr",
     ],
 )
 
@@ -21,8 +27,5 @@ cc_library(
         "//include:cucumber-cpp",
         "//src/connectors/wire",
         "//src/drivers:driver",
-        "@boost//:asio",
-        "@boost//:filesystem",
-        "@boost//:program_options",
     ],
 )

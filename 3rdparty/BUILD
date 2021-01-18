@@ -5,4 +5,8 @@ cc_library(
     hdrs = glob(["**/*.h"]),
     strip_include_prefix = ".",
     visibility = ["//visibility:public"],
+    deps = [
+        "@boost//:spirit",
+        "@boost//:variant",
+    ],
 )

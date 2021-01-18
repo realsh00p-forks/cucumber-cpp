@@ -11,5 +11,8 @@ cc_library(
     deps = [
         "//3rdparty:json_spirit",
         "//include:cucumber-cpp",
+        "@boost//:assign",
+        "@boost//:filesystem",
+        "@boost//:multi_array",
     ],
 )
