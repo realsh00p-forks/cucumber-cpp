@@ -11,6 +11,7 @@ cc_library(
     srcs = ["GTestDriver.cpp"],
     deps = [
         "//include:cucumber-cpp",
-        "@gtest",
+        "@com_google_googletest//:gtest_main",
     ],
 )
+
