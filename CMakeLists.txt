@@ -2,9 +2,12 @@ cmake_minimum_required(VERSION 2.8)
 
 project(Cucumber-Cpp)
 
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+
 set(CUKE_USE_STATIC_BOOST ${MSVC} CACHE BOOL "Statically link Boost (except boost::test)")
-set(CUKE_DISABLE_BOOST_TEST OFF CACHE BOOL "Disable boost:test")
-set(CUKE_DISABLE_CPPSPEC OFF CACHE BOOL "Disable CppSpec")
+set(CUKE_DISABLE_BOOST_TEST ON CACHE BOOL "Disable boost:test")
+set(CUKE_DISABLE_CPPSPEC ON CACHE BOOL "Disable CppSpec")
 set(CUKE_DISABLE_GTEST OFF CACHE BOOL "Disable Google Test framework")
 set(CUKE_DISABLE_FUNCTIONAL OFF CACHE BOOL "Disable Functional Tests")
 set(CUKE_ENABLE_EXAMPLES OFF CACHE BOOL "Enable the examples")
@@ -19,7 +22,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Weffc++")
-    # TODO: A better fix should handle ld's --as-needed flag 
+    # TODO: A better fix should handle ld's --as-needed flag
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Xlinker '--no-as-needed'")
 elseif(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNOMINMAX") # exclude M$ min/max macros
@@ -60,7 +63,7 @@ endif()
 
 if(CUKE_STATIC_BOOST_LIBS)
     set(Boost_USE_STATIC_LIBS ON)
-    find_package(Boost ${BOOST_MIN_VERSION} COMPONENTS ${CUKE_STATIC_BOOST_LIBS})
+    find_package(Boost CONFIG COMPONENTS ${CUKE_STATIC_BOOST_LIBS})
 endif()
 
 if(CUKE_DYNAMIC_BOOST_LIBS)
@@ -86,15 +89,9 @@ endif()
 #
 
 if(NOT CUKE_DISABLE_GTEST)
-    find_package(GTest)
-    find_package(GMock)
-    if(GMOCK_FOUND AND GTEST_FOUND)
-        set(CUKE_TEST_LIBRARIES ${GTEST_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})
-        if(UNIX)
-            find_package(Threads) # GTest needs this and it's a static library
-            set(CUKE_TEST_LIBRARIES ${CUKE_TEST_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
-        endif()
-    endif()
+    find_package(GTest REQUIRED)
+    find_package(Threads REQUIRED)
+    set(CUKE_TEST_LIBRARIES GTest::gtest GTest::gmock Threads::Threads)
 endif()
 
 #
@@ -107,12 +104,10 @@ include_directories(${CUKE_INCLUDE_DIR})
 
 set(CUKE_LIBRARIES cucumber-cpp ${CUKE_EXTRA_LIBRARIES})
 
-add_subdirectory(src)
-add_subdirectory(tests)
 
-if(CUKE_ENABLE_EXAMPLES)
-    add_subdirectory(examples)
-endif()
+add_compile_definitions(BOOST_BIND_GLOBAL_PLACEHOLDERS)
+
+add_subdirectory(src)
 
 #
 # Functional Tests
